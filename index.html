@@ -1,0 +1,54 @@
+<html lang='en'>
+<head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <title>MetricsGraphics.js (DEV)</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+
+    <link href='css/metricsgraphics-dark.css' rel='stylesheet' type='text/css' id='dark'>
+    <link href='' rel='stylesheet' type='text/css' id='dark'>
+    <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='http://underscorejs.org/underscore-min.js'></script>
+
+    <script src='js/metricsgraphics.min.js'></script>
+
+
+    <script src='js/main.js'></script>
+
+</head>
+
+<body>
+    <div id='container' class='container'>
+        <div id='content-body'>
+            <div class='head'>
+            </div>
+
+            <div id='trunk'>
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Hassle-Free Layouts</h2>
+                        <p>We use Bootstrap's grid template to lay out graphics. This means
+                        that it is ridiculously easy to create grids of arbitrary sizes
+                        and place graphics and their corresponding prose or associated
+                        graphics wherever and however one pleases.</p>
+                        <p>Setting <i>legend</i> and <i>legend_target</i> allows you to
+                        generate a key to go with the graphic.</p>
+                        <div class='legend'></div>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='col-lg-12 text-center extended-y-ticks' id='histogram2'></div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
