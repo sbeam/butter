@@ -2,15 +2,61 @@
 <head>
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <title>MetricsGraphics.js (DEV)</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+    <link rel="import" href="magoo-field.html">
+
+
+    <style>
+      html,body {
+        height: 100%;
+        margin: 0;
+        background-color: #E5E5E5;
+        font-family: 'RobotoDraft', sans-serif;
+      }
+
+      core-header-panel {
+          height: 100%;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
+      }
+      core-toolbar {
+          background: #03a9f4;
+          color: white;
+      }
+      #tabs {
+          width: 100%;
+          margin: 0;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          text-transform: uppercase;
+      }
+
+      .container {
+        width: 80%;
+        margin: 50px auto;
+      }
+      @media (min-width: 481px) {
+        #tabs {
+          width: 200px;
+        }
+        .container {
+          width: 400px;
+        }
+      }
+    </style>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
-    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
 
     <link href='css/metricsgraphics-dark.css' rel='stylesheet' type='text/css' id='dark'>
-    <link href='' rel='stylesheet' type='text/css' id='dark'>
-    <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='bower_components/d3/d3.min.js' charset='utf-8'></script>
@@ -19,36 +65,35 @@
 
     <script src='bower_components/metrics-graphics/js/metricsgraphics.min.js'></script>
 
-
     <script src='js/main.js'></script>
 
 </head>
 
-<body>
-    <div id='container' class='container'>
-        <div id='content-body'>
-            <div class='head'>
-            </div>
+<body unresolved>
+    <core-header-panel>
 
-            <div id='trunk'>
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Hassle-Free Layouts</h2>
-                        <p>We use Bootstrap's grid template to lay out graphics. This means
-                        that it is ridiculously easy to create grids of arbitrary sizes
-                        and place graphics and their corresponding prose or associated
-                        graphics wherever and however one pleases.</p>
-                        <p>Setting <i>legend</i> and <i>legend_target</i> allows you to
-                        generate a key to go with the graphic.</p>
-                        <div class='legend'></div>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='col-lg-12 text-center extended-y-ticks' id='histogram2'></div>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </div>
-    </div>
+      <core-toolbar>
+          <paper-tabs id="tabs" selected="all" self-end>
+              <paper-tab name="dist">Dist</paper-tab>
+              <paper-tab name="config">Config</paper-tab>
+          </paper-tabs>
+      </core-toolbar>
+
+      <div class="container" layout vertical center>
+          <magoo-field url="http://stats.reviewed.com:8086/db/hydra-timing/series?u=root&p=root" query="select histogram(value, 100) from domContentLoadedEventEnd where time > now() - 3h and value < 10000">
+          <h1>such it is</h1>
+          </magoo-field>
+      </div>
+
+    </core-header-panel>
+
+</body>
+<script>
+  var tabs = document.querySelector('paper-tabs');
+
+  tabs.addEventListener('core-select', function() {
+    console.log("Selected: " + tabs.selected);
+  });
+</script>
 </body>
 </html>

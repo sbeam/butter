@@ -1,0 +1,46 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="magoo-field" attributes="url query" noscript>
+
+  <template>
+    <style>
+    :host {
+      display: block;
+      position: relative;
+      background-color: white;
+      padding: 20px;
+      width: 100%;
+      font-size: 1.2rem;
+      font-weight: 300;
+    }
+    .card-header {
+      margin-bottom: 10px;
+    }
+    polyfill-next-selector { content: '.card-header h1'; }
+    .card-header ::content h1 {
+        display: block;
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 300;
+    }
+    .card-header textarea {
+        height: 30px;
+        width: 300px;
+    }
+    .card-header span {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 100;
+    }
+
+    </style>
+    <core-ajax url="{{url}}&q={{query}}" auto response="{{resp}}"></core-ajax>
+    <div class="card-header">
+        <content select="h1"></content>
+        <textarea value="{{resp}}"></textarea>
+        <span>{{query}}</span>
+    </div>
+    <content></content>
+  </template>
+</polymer-element>
