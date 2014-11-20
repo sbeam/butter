@@ -1,0 +1,23 @@
+{
+  "name": "borax",
+  "version": "0.0.1",
+  "authors": [
+    "Sam Beam <sbeam@syxyz.net>"
+  ],
+  "description": "charts for influxDB",
+  "main": ["index.html", "js/main.js", "css/metricsgraphics-dark.css"],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.1",
+    "jquery": "~2.1.1",
+    "metrics-graphics": "*",
+    "underscore": "~1.7.0"
+  }
+}
