@@ -1,7 +1,7 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 
-<polymer-element name="magoo-field" attributes="url query" noscript>
+<polymer-element name="magoo-field" attributes="url query">
 
   <template>
     <style>
@@ -35,12 +35,45 @@
     }
 
     </style>
-    <core-ajax url="{{url}}&q={{query}}" auto response="{{resp}}"></core-ajax>
+    <core-ajax id="query" url="{{url}}" params='{"q":"{{query}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
     <div class="card-header">
         <content select="h1"></content>
-        <textarea value="{{resp}}"></textarea>
+        <div id="histogram2"></div>
+        <textarea value="{{points_debug}}"></textarea>
         <span>{{query}}</span>
     </div>
     <content></content>
   </template>
+  <script>
+      Polymer({
+        created: function() {
+          this.posts = [];
+        },
+        dataLoaded: function() {
+          this.points = this.$.query.response[0].points
+          this.buckets = _.map(this.points, function(v, i) { return { count: v[2], value: v[1] } })
+          this.buckets = _.sortBy(this.buckets, function(a) { return a.value } )
+          this.points_debug = _.map(this.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
+          console.log(this.points)
+
+          var histo = data_graphic({
+              title: "Histogram 2",
+              description: "Already binned data being fed in.",
+              data: this.buckets,
+              binned: true,
+              chart_type: 'histogram',
+              width: 375*2,
+              height: 500,
+              right: 20,
+              target: this.$.histogram2,
+              y_extended_ticks: true,
+              x_accessor:'value',
+              y_accessor:'count'
+          })
+        },
+        setFavorite: function(uid, isFavorite) {
+          console.log('Favorite changed: ' + uid + ", now: " + isFavorite);
+        }
+      })
+  </script>
 </polymer-element>
