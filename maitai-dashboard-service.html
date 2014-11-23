@@ -23,9 +23,9 @@
     dataLoaded: function() {
       this.queries = this.$.ajax.response.slice(0);
     },
-    setFavorite: function(uid, isFavorite) {
-      // no service backend, just log the change
-      console.log('Favorite changed: ' + uid + ", now: " + isFavorite);
+    addQuery: function(query) {
+      console.log('new query received! ' + query.query)
+      this.queries.push(query)
     }
   });
   </script>

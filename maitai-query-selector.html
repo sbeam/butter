@@ -3,10 +3,12 @@
 <link rel="import" href="bower_components/paper-input/paper-input.html">
 <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="maitai-dashboard-service.html">
 
 <polymer-element name="maitai-query-selector">
 
   <template>
+    <maitai-dashboard-service id="dashboardService" queries="{{queries}}"></maitai-dashboard-service>
 
           <paper-input value="{{query}}" label="Enter some IQL if you please"></paper-input>
           <paper-button on-click="{{addQuery}}">
@@ -18,7 +20,7 @@
         Polymer({
           addQuery: function(e, detail, sender) {
             console.log(this.query)
-            this.fire('favorite-tap', this.query);
+            this.$.dashboardService.addQuery({type: 'histogram', title: 'new query', query: this.query})
           }
         })
     </script>

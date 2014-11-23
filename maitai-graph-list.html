@@ -1,6 +1,9 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="magoo-field.html">
 <link rel="import" href="maitai-dashboard-service.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
 
 <polymer-element name="maitai-graph-list" attributes="show">
   <template>
@@ -14,7 +17,15 @@
     }
     </style>
 
-    <maitai-dashboard-service id="service" queries="{{queries}}"></maitai-dashboard-service>
+    <maitai-dashboard-service id="dashboardService" queries="{{queries}}"></maitai-dashboard-service>
+
+
+    <div layout right>
+      <paper-input value="{{query}}" label="Enter some IQL if you please"></paper-input>
+      <paper-button on-click="{{addQuery}}">
+        <core-icon icon="input"></core-icon>
+      </paper-button>
+    </div>
 
     <div layout vertical center>
       <template repeat="{{query in queries}}">
@@ -30,6 +41,10 @@
 
   <script>
       Polymer({
+          addQuery: function(e, detail, sender) {
+            console.log(this.query)
+            this.$.dashboardService.addQuery({type: 'histogram', title: 'new query', query: this.query})
+          },
 
 
           handleFavorite: function(event, detail, sender) {
