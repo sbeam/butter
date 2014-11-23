@@ -1,5 +1,6 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="magoo-field.html">
+<link rel="import" href="maitai-dashboard-service.html">
 
 <polymer-element name="maitai-graph-list" attributes="show">
   <template>
@@ -13,9 +14,7 @@
     }
     </style>
 
-    <!--
-    <post-service id="service" posts="{{posts}}"></post-service>
-    -->
+    <maitai-dashboard-service id="service" queries="{{queries}}"></maitai-dashboard-service>
 
     <div layout vertical center>
       <template repeat="{{query in queries}}">
@@ -31,18 +30,6 @@
 
   <script>
       Polymer({
-        queries: [
-          {
-            type:  "histogram",
-            title: "domContentLoaded last 3h",
-            query: "select histogram(value, 100) from domContentLoadedEventEnd where time > now() - 3h and value < 10000",
-          },
-          {
-            type:  "histogram",
-            title: "domInteractive last 3h",
-            query: "select histogram(value, 100) from domInteractive where time > now() - 3h and value < 10000",
-          },
-        ],
 
 
           handleFavorite: function(event, detail, sender) {

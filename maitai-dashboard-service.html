@@ -1,0 +1,32 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="maitai-dashboard-service" attributes="queries">
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+    <core-ajax id="ajax"
+      auto
+      url="./api/queries.json"
+      on-core-response="{{dataLoaded}}"
+      handleAs="json">
+    </core-ajax>
+  </template>
+  <script>
+  Polymer('maitai-dashboard-service', {
+    created: function() {
+      this.queries = [];
+    },
+    dataLoaded: function() {
+      this.queries = this.$.ajax.response.slice(0);
+    },
+    setFavorite: function(uid, isFavorite) {
+      // no service backend, just log the change
+      console.log('Favorite changed: ' + uid + ", now: " + isFavorite);
+    }
+  });
+  </script>
+</polymer-element>
