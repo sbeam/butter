@@ -41,7 +41,7 @@
     <core-ajax id="query" url="{{url}}" params='{"q":"{{query}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
     <div class="card-header">
         <content select="h1"></content>
-        <div id="histogram2"></div>
+        <div id="graphicTarget"></div>
         <textarea value="{{points_debug}}"></textarea>
         <span>{{query}}</span>
         <span>{{chartType}}</span>
@@ -58,14 +58,13 @@
           this.buckets = _.map(this.points, function(v, i) { return { count: v[2], value: v[1] } })
           this.buckets = _.sortBy(this.buckets, function(a) { return a.value } )
           this.points_debug = _.map(this.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
-          console.log(this.points)
 
           var histo = data_graphic({
               data: this.buckets,
-              binned: true,
+              target: this.$.graphicTarget,
               chart_type: this.chartType,
+              binned: true,
               width: 750,
-              target: this.$.histogram2,
               y_extended_ticks: true,
               x_accessor:'value',
               y_accessor:'count'

@@ -1,9 +1,13 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="magoo-field.html">
 <link rel="import" href="maitai-dashboard-service.html">
+<link rel="import" href="bower_components/core-item/core-item.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="bower_components/core-menu/core-menu.html">
+<link rel="import" href="bower_components/core-dropdown/core-dropdown.html">
+<link rel="import" href="bower_components/core-dropdown-menu/core-dropdown-menu.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-input/paper-input.html">
-<link rel="import" href="bower_components/core-icon/core-icon.html">
 
 <polymer-element name="maitai-graph-list" attributes="show">
   <template>
@@ -15,15 +19,57 @@
     magoo-field {
       margin-bottom: 30px;
     }
+
+    core-dropdown-menu {
+      box-sizing: border-box;
+      width: 170px;
+      background-color: inherit;
+      padding-left: 20px;
+    }
+
+    core-dropdown {
+      box-sizing: border-box;
+      min-width: 170px;
+      background-color: inherit;
+      color: inherit;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    core-dropdown, core-menu {
+      background-color: #272727 !important; /* TODO how else to do this */
+    }
+    core-item {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      background-color: inherit;
+    }
+
+    core-collapse {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
     </style>
 
     <maitai-dashboard-service id="dashboardService" queries="{{queries}}"></maitai-dashboard-service>
 
 
-    <div layout right>
+    <div horizontal end-justified layout>
       <paper-input value="{{query}}" label="Enter some IQL if you please"></paper-input>
+
+      <core-dropdown-menu label="Chart type">
+          <core-dropdown class="dropdown">
+              <core-menu selectedItem="{{selectedChartType}}">
+                  <template repeat="{{chartTypes}}">
+                    <core-item>{{}}</core-item>
+                  </template>
+              </core-menu>
+          </core-dropdown>
+      </core-dropdown-menu>
+
       <paper-button on-click="{{addQuery}}">
-        <core-icon icon="input"></core-icon>
+        <core-icon icon="add-circle-outline"></core-icon>
       </paper-button>
     </div>
 
@@ -41,9 +87,11 @@
 
   <script>
       Polymer({
+          chartTypes: ['histogram', 'time series'],
+
           addQuery: function(e, detail, sender) {
-            console.log(this.query)
-            this.$.dashboardService.addQuery({type: 'histogram', title: 'new query', query: this.query})
+            console.log(this.selectedChartType.innerText)
+            this.$.dashboardService.addQuery({type: this.selectedChartType.innerText, title: 'new query', query: this.query})
           },
 
 
