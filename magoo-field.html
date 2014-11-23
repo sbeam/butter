@@ -1,7 +1,7 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 
-<polymer-element name="magoo-field" attributes="url query">
+<polymer-element name="magoo-field" attributes="url query chartType">
 
   <template>
     <!-- http://japhr.blogspot.com/2014/06/dynamically-adding-external-styles-to.html -->
@@ -44,6 +44,7 @@
         <div id="histogram2"></div>
         <textarea value="{{points_debug}}"></textarea>
         <span>{{query}}</span>
+        <span>{{chartType}}</span>
     </div>
     <content></content>
   </template>
@@ -62,7 +63,7 @@
           var histo = data_graphic({
               data: this.buckets,
               binned: true,
-              chart_type: 'histogram',
+              chart_type: this.chartType,
               width: 750,
               target: this.$.histogram2,
               y_extended_ticks: true,

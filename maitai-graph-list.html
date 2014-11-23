@@ -20,6 +20,7 @@
     <div layout vertical center>
       <template repeat="{{query in queries}}">
         <magoo-field url="http://stats.reviewed.com:8086/db/hydra-timing/series?u=root&p=root"
+                     chartType="{{query.type}}"
                      query="{{query.query}}">
            <h1>{{query.title}}</h1>
         </magoo-field>
@@ -32,10 +33,12 @@
       Polymer({
         queries: [
           {
+            type:  "histogram",
             title: "domContentLoaded last 3h",
             query: "select histogram(value, 100) from domContentLoadedEventEnd where time > now() - 3h and value < 10000",
           },
           {
+            type:  "histogram",
             title: "domInteractive last 3h",
             query: "select histogram(value, 100) from domInteractive where time > now() - 3h and value < 10000",
           },
