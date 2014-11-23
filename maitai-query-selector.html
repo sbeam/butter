@@ -1,0 +1,25 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+
+<polymer-element name="maitai-query-selector">
+
+  <template>
+
+          <paper-input value="{{query}}" label="Enter some IQL if you please"></paper-input>
+          <paper-button on-click="{{addQuery}}">
+            <core-icon icon="input"></core-icon>
+          </paper-button>
+
+    </template>
+    <script>
+        Polymer({
+          addQuery: function(e, detail, sender) {
+            console.log(this.query)
+            this.fire('favorite-tap', this.query);
+          }
+        })
+    </script>
+</polymer-element>

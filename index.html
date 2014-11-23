@@ -8,8 +8,10 @@
 
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
-    <link rel="import" href="magoo-field.html">
+    <link rel="import" href="bower_components/paper-input/paper-input.html">
+    <link rel="import" href="bower_components/paper-button/paper-button.html">
+    <link rel="import" href="maitai-query-selector.html">
+    <link rel="import" href="maitai-graph-list.html">
 
 
     <style>
@@ -74,18 +76,19 @@
 
       <core-toolbar>
           <paper-tabs id="tabs" selected="all" self-end>
+              <paper-tab name="all">All</paper-tab>
               <paper-tab name="dist">Dist</paper-tab>
               <paper-tab name="config">Config</paper-tab>
           </paper-tabs>
       </core-toolbar>
 
       <div class="container" layout vertical center>
-          <magoo-field url="http://stats.reviewed.com:8086/db/hydra-timing/series?u=root&p=root" query="select histogram(value, 100) from domContentLoadedEventEnd where time > now() - 3h and value < 10000">
-            <h1>domContentLoadedEventEnd</h1>
-          </magoo-field>
-          <magoo-field url="http://stats.reviewed.com:8086/db/hydra-timing/series?u=root&p=root" query="select histogram(value, 100) from domInteractive where time > now() - 3h and value < 10000">
-            <h1>domInteractive</h1>
-          </magoo-field>
+          <maitai-query-selector></maitai-query-selector>
+
+          <div class="container" layout vertical center>
+              <maitai-graph-list show="all"></maitai-graph-list>
+          </div>
+
       </div>
 
     </core-header-panel>
@@ -97,6 +100,7 @@
   tabs.addEventListener('core-select', function() {
     console.log("Selected: " + tabs.selected);
   });
+
 </script>
 </body>
 </html>
