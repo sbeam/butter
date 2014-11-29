@@ -48,7 +48,8 @@
         <span>{{chartType}}</span>
     </div>
     <content></content>
-    <core-ajax id="query" url="{{url}}" params='{"q":"{{iql}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
+    <core-ajax id="influx" url="{{url}}" params='{"q":"{{iql}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
+    <core-xhr id="xhr"></core-xhr>
   </template>
   <script>
       Polymer({
@@ -57,21 +58,22 @@
             this.iql = "select histogram(value, "+this.query.bucket_width+") from "+this.query.series.join(", ")+" where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
           }
           else {
-            var base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
-            this.iql = base_iql.replace(/#function#/, 'median(value)').replace(/#group#/, "group by time("+this.query.time_group+")") //, percentile(value, 95)
+            this.base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
+            this.iql = this.base_iql.replace(/#function#/, 'median(value)').replace(/#group#/, "group by time("+this.query.time_group+")") //, percentile(value, 95)
           }
         },
         dataLoaded: function() {
-          if (this.chartType == 'histogram') {
-            this.points = this.$.query.response[0].points
-            this.buckets = _.map(this.points, function(v, i) { return { count: v[2], value: v[1] } })
-            this.buckets = _.sortBy(this.buckets, function(a) { return a.value } )
-            this.points_debug = _.map(this.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
+          var self = this
+          if (self.chartType == 'histogram') {
+            self.points = self.$.influx.response[0].points
+            self.buckets = _.map(self.points, function(v, i) { return { count: v[2], value: v[1] } })
+            self.buckets = _.sortBy(self.buckets, function(a) { return a.value } )
+            self.points_debug = _.map(self.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
 
             var histo = data_graphic({
-                data: this.buckets,
-                target: this.$.graphicTarget,
-                chart_type: this.chartType,
+                data: self.buckets,
+                target: self.$.graphicTarget,
+                chart_type: self.chartType,
                 binned: true,
                 width: 750,
                 y_extended_ticks: true,
@@ -80,28 +82,40 @@
             })
           }
           else {
-            //this.lineData = _.map(this.$.query.response, function(metric) {
-            this.lineData = _.map(this.$.query.response, function(metric) {
+            //self.lineData = _.map(self.$.influx.response, function(metric) {
+            self.lineData = _.map(self.$.influx.response, function(metric) {
               var median_index = metric.columns.indexOf('median')
               var points = _.map(metric.points, function(point) {
                 return { time: point[0]/1000, val: point[median_index] }
               })
               return _.sortBy(points, function(a) { return a.time } )
             })
-            this.points_debug = JSON.stringify(this.lineData)
-            console.log(JSON.stringify(this.lineData))
+            self.points_debug = JSON.stringify(self.lineData)
+            console.log(JSON.stringify(self.lineData))
 
-            data_graphic({
-                data: this.lineData,
-                target: this.$.graphicTarget,
-                area: true,
-                width: 750,
-                height: 500,
-                x_accessor:'time',
-                y_accessor:'val',
-                x_label: 'time',
-                y_label: 'ms'
-            })
+            var params = JSON.parse(self.$.influx.params)
+            params.q = self.base_iql.replace(/#function#/, "median(value)").replace(/#group#/, "")
+
+            self.$.xhr.request({url: self.$.influx.url, params: params, callback: function(baselineData) {
+              var baselines = _.map(JSON.parse(baselineData), function(line) {
+                var val = line.points[0][1]
+                return { value: val, label: 'median:'+val }
+              })
+              data_graphic({
+                  data: self.lineData,
+                  target: self.$.graphicTarget,
+                  area: true,
+                  width: 750,
+                  height: 500,
+                  x_accessor:'time',
+                  y_accessor:'val',
+                  x_label: 'time',
+                  y_label: 'ms',
+                  baselines: baselines
+              })
+
+            }})
+
           }
         },
         setFavorite: function(uid, isFavorite) {
