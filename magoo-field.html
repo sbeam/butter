@@ -59,7 +59,7 @@
           }
           else {
             this.base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
-            this.iql = this.base_iql.replace(/#function#/, 'median(value)').replace(/#group#/, "group by time("+this.query.time_group+")") //, percentile(value, 95)
+            this.iql = this.base_iql.replace(/#function#/, 'median(value), percentile(value, 60), percentile(value, 40)').replace(/#group#/, "group by time("+this.query.time_group+")") //, percentile(value, 95)
           }
         },
         dataLoaded: function() {
@@ -84,9 +84,8 @@
           else {
             //self.lineData = _.map(self.$.influx.response, function(metric) {
             self.lineData = _.map(self.$.influx.response, function(metric) {
-              var median_index = metric.columns.indexOf('median')
               var points = _.map(metric.points, function(point) {
-                return { time: point[0]/1000, val: point[median_index] }
+                return { time: point[0]/1000, val: point[1], upper: point[2], lower: point[3] }
               })
               return _.sortBy(points, function(a) { return a.time } )
             })
@@ -111,6 +110,7 @@
                   y_accessor:'val',
                   x_label: 'time',
                   y_label: 'ms',
+                  show_confidence_band: ['lower', 'upper'],
                   baselines: baselines
               })
 
