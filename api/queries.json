@@ -1,12 +1,33 @@
 [
   {
+    "type":  "time series",
+    "title": "domInteractive, domContentLoadedEventEnd last 3h",
+    "query": "select median(value) from domContentLoadedEventEnd, domInteractive group by time(1m) where time > now() - 60m and value < 10000 and page_ids = 'articles.show'",
+    "series": ["domContentLoadedEventEnd", "domInteractive"],
+    "time_group": "1m",
+    "time_end": "now()",
+    "time_start": "60m",
+    "cutoff": 10000,
+    "columns": { "page_ids": "articles.show" }
+  },
+  {
     "type":  "histogram",
     "title": "domContentLoaded last 3h",
-    "query": "select histogram(value, 100) from domContentLoadedEventEnd where time > now() - 3h and value < 10000"
+    "query": "select histogram(value, 100) from domContentLoadedEventEnd where time > now() - 3h and value < 10000",
+    "bucket_width": 100,
+    "series": ["domContentLoadedEventEnd"],
+    "time_start": "3h",
+    "time_end": "now()",
+    "cutoff": 10000
   },
   {
     "type":  "histogram",
     "title": "domInteractive last 3h",
-    "query": "select histogram(value, 100) from domInteractive where time > now() - 3h and value < 10000"
+    "query": "select histogram(value, 100) from domInteractive where time > now() - 3h and value < 10000",
+    "bucket_width": 100,
+    "series": ["domInteractive"],
+    "time_start": "8h",
+    "time_end": "now()",
+    "cutoff": 10000
   }
 ]

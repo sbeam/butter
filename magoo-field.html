@@ -38,37 +38,69 @@
     }
 
     </style>
-    <core-ajax id="query" url="{{url}}" params='{"q":"{{query}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
     <div class="card-header">
         <content select="h1"></content>
         <div id="graphicTarget"></div>
         <textarea value="{{points_debug}}"></textarea>
-        <span>{{query}}</span>
+        <span>{{iql}}</span>
         <span>{{chartType}}</span>
     </div>
     <content></content>
+    <core-ajax id="query" url="{{url}}" params='{"q":"{{iql}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
   </template>
   <script>
       Polymer({
-        created: function() {
-          this.posts = [];
+        attached: function() {
+          if (this.query.type == 'histogram') {
+            this.iql = "select histogram(value, "+this.query.bucket_width+") from "+this.query.series.join(", ")+" where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
+          }
+          else {
+            var base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
+            this.iql = base_iql.replace(/#function#/, 'median(value)').replace(/#group#/, "group by time("+this.query.time_group+")") //, percentile(value, 95)
+          }
         },
         dataLoaded: function() {
-          this.points = this.$.query.response[0].points
-          this.buckets = _.map(this.points, function(v, i) { return { count: v[2], value: v[1] } })
-          this.buckets = _.sortBy(this.buckets, function(a) { return a.value } )
-          this.points_debug = _.map(this.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
+          if (this.chartType == 'histogram') {
+            this.points = this.$.query.response[0].points
+            this.buckets = _.map(this.points, function(v, i) { return { count: v[2], value: v[1] } })
+            this.buckets = _.sortBy(this.buckets, function(a) { return a.value } )
+            this.points_debug = _.map(this.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
 
-          var histo = data_graphic({
-              data: this.buckets,
-              target: this.$.graphicTarget,
-              chart_type: this.chartType,
-              binned: true,
-              width: 750,
-              y_extended_ticks: true,
-              x_accessor:'value',
-              y_accessor:'count'
-          })
+            var histo = data_graphic({
+                data: this.buckets,
+                target: this.$.graphicTarget,
+                chart_type: this.chartType,
+                binned: true,
+                width: 750,
+                y_extended_ticks: true,
+                x_accessor:'value',
+                y_accessor:'count'
+            })
+          }
+          else {
+            //this.lineData = _.map(this.$.query.response, function(metric) {
+            this.lineData = _.map(this.$.query.response, function(metric) {
+              var median_index = metric.columns.indexOf('median')
+              var points = _.map(metric.points, function(point) {
+                return { time: point[0]/1000, val: point[median_index] }
+              })
+              return _.sortBy(points, function(a) { return a.time } )
+            })
+            this.points_debug = JSON.stringify(this.lineData)
+            console.log(JSON.stringify(this.lineData))
+
+            data_graphic({
+                data: this.lineData,
+                target: this.$.graphicTarget,
+                area: true,
+                width: 750,
+                height: 500,
+                x_accessor:'time',
+                y_accessor:'val',
+                x_label: 'time',
+                y_label: 'ms'
+            })
+          }
         },
         setFavorite: function(uid, isFavorite) {
           console.log('Favorite changed: ' + uid + ", now: " + isFavorite);
