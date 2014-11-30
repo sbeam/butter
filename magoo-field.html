@@ -1,6 +1,7 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="bower_components/core-xhr/core-xhr.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
 
 <polymer-element name="magoo-field" attributes="url query chartType">
 
@@ -38,14 +39,27 @@
         font-size: 0.8rem;
         font-weight: 100;
     }
-
+    #debug {
+      display: none;
+    }
+    #debug.on {
+      display: block;
+    }
+    #debug span {
+      font-family: monospace;
+      font-size: 10px;
+      color: #ddd;
+    }
     </style>
     <div class="card-header">
         <content select="h1"></content>
         <div id="graphicTarget"></div>
-        <textarea value="{{points_debug}}"></textarea>
-        <span>{{iql}}</span>
-        <span>{{chartType}}</span>
+        <div horizontal end-justified layout>
+          <core-icon on-click="{{toggleDebugDisplay}}" icon="visibility"></core-icon>
+        </div>
+        <div id="debug">
+          <span>{{iql}}</span>
+        </div>
     </div>
     <content></content>
     <core-ajax id="influx" url="{{url}}" params='{"q":"{{iql}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
@@ -62,13 +76,15 @@
             this.iql = this.base_iql.replace(/#function#/, 'median(value), percentile(value, 60), percentile(value, 40)').replace(/#group#/, "group by time("+this.query.time_group+")")
           }
         },
+        toggleDebugDisplay: function(e, detail, sender) {
+          this.$.debug.classList.toggle('on')
+        },
         dataLoaded: function() {
           var self = this
           if (self.chartType == 'histogram') {
             self.points = self.$.influx.response[0].points
             self.buckets = _.map(self.points, function(v, i) { return { count: v[2], value: v[1] } })
             self.buckets = _.sortBy(self.buckets, function(a) { return a.value } )
-            self.points_debug = _.map(self.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
 
             var params = JSON.parse(self.$.influx.params)
             params.q = self.base_iql.replace(/#function#/, "median(value)").replace('#group#', '')
@@ -97,8 +113,6 @@
               })
               return _.sortBy(points, function(a) { return a.time } )
             })
-            self.points_debug = JSON.stringify(self.lineData)
-            console.log(JSON.stringify(self.lineData))
 
             var params = JSON.parse(self.$.influx.params)
             params.q = self.base_iql.replace(/#function#/, "median(value)").replace(/#group#/, "")
