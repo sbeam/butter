@@ -54,12 +54,12 @@
   <script>
       Polymer({
         attached: function() {
+          this.base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff+" and value > 0"
           if (this.query.type == 'histogram') {
-            this.iql = "select histogram(value, "+this.query.bucket_width+") from "+this.query.series.join(", ")+" where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
+            this.iql = this.base_iql.replace(/#function#/, 'histogram(value, '+this.query.bucket_width+')').replace(/#group#/, "")
           }
           else {
-            this.base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff
-            this.iql = this.base_iql.replace(/#function#/, 'median(value), percentile(value, 60), percentile(value, 40)').replace(/#group#/, "group by time("+this.query.time_group+")") //, percentile(value, 95)
+            this.iql = this.base_iql.replace(/#function#/, 'median(value), percentile(value, 60), percentile(value, 40)').replace(/#group#/, "group by time("+this.query.time_group+")")
           }
         },
         dataLoaded: function() {
@@ -70,16 +70,24 @@
             self.buckets = _.sortBy(self.buckets, function(a) { return a.value } )
             self.points_debug = _.map(self.buckets, function(b) { return ""+b.value+"=>"+b.count }).join("\n")
 
-            var histo = data_graphic({
-                data: self.buckets,
-                target: self.$.graphicTarget,
-                chart_type: self.chartType,
-                binned: true,
-                width: 750,
-                y_extended_ticks: true,
-                x_accessor:'value',
-                y_accessor:'count'
-            })
+            var params = JSON.parse(self.$.influx.params)
+            params.q = self.base_iql.replace(/#function#/, "median(value)").replace('#group#', '')
+
+            self.$.xhr.request({url: self.$.influx.url, params: params, callback: function(baselineData) {
+              var median = JSON.parse(baselineData)[0].points[0][1]
+
+              var histo = data_graphic({
+                  data: self.buckets,
+                  target: self.$.graphicTarget,
+                  chart_type: self.chartType,
+                  binned: true,
+                  width: 750,
+                  y_extended_ticks: true,
+                  x_accessor:'value',
+                  y_accessor:'count',
+                  markers: [{ value: median, label: 'median:'+median }]
+              })
+            }})
           }
           else {
             //self.lineData = _.map(self.$.influx.response, function(metric) {
