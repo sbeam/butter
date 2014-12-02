@@ -75,8 +75,7 @@
 
     <div layout vertical center>
       <template repeat="{{query in queries}}">
-        <magoo-field url="http://stats.reviewed.com:8086/db/hydra-timing/series?u=root&p=root"
-                     chartType="{{query.type}}"
+        <magoo-field chartType="{{query.type}}"
                      query="{{query}}">
            <h1>{{query.title}}</h1>
         </magoo-field>

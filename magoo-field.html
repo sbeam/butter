@@ -3,6 +3,8 @@
 <link rel="import" href="bower_components/core-xhr/core-xhr.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 
+<link rel="import" href="maitai-query-service.html">
+
 <polymer-element name="magoo-field" attributes="url query chartType">
 
   <template>
@@ -62,82 +64,45 @@
         </div>
     </div>
     <content></content>
-    <core-ajax id="influx" url="{{url}}" params='{"q":"{{iql}}", "u":"root","p":"password"}' handleAs="json" auto on-core-response="{{dataLoaded}}"></core-ajax>
-    <core-xhr id="xhr"></core-xhr>
+    <maitai-query-service id="queryService" iql="{{iql}}" query="{{query}}" response="{{responseData}}"></maitai-query-service>
   </template>
   <script>
       Polymer({
-        attached: function() {
-          this.base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff+" and value > 0"
-          if (this.query.type == 'histogram') {
-            this.iql = this.base_iql.replace(/#function#/, 'histogram(value, '+this.query.bucket_width+')').replace(/#group#/, "")
-          }
-          else {
-            this.iql = this.base_iql.replace(/#function#/, 'median(value), percentile(value, 60), percentile(value, 40)').replace(/#group#/, "group by time("+this.query.time_group+")")
-          }
-        },
         toggleDebugDisplay: function(e, detail, sender) {
           this.$.debug.classList.toggle('on')
         },
-        dataLoaded: function() {
+        observe: {
+          'responseData': 'chartDataLoaded'
+        },
+        chartDataLoaded: function(oldData, data) {
           var self = this
-          if (self.chartType == 'histogram') {
-            self.points = self.$.influx.response[0].points
-            self.buckets = _.map(self.points, function(v, i) { return { count: v[2], value: v[1] } })
-            self.buckets = _.sortBy(self.buckets, function(a) { return a.value } )
-
-            var params = JSON.parse(self.$.influx.params)
-            params.q = self.base_iql.replace(/#function#/, "median(value)").replace('#group#', '')
-
-            self.$.xhr.request({url: self.$.influx.url, params: params, callback: function(baselineData) {
-              var median = JSON.parse(baselineData)[0].points[0][1]
-
-              var histo = data_graphic({
-                  data: self.buckets,
-                  target: self.$.graphicTarget,
-                  chart_type: self.chartType,
-                  binned: true,
-                  width: 750,
-                  y_extended_ticks: true,
-                  x_accessor:'value',
-                  y_accessor:'count',
-                  markers: [{ value: median, label: 'median:'+median }]
-              })
-            }})
+          if (this.query.type == 'histogram') {
+            data_graphic({
+                data: data.points,
+                target: self.$.graphicTarget,
+                chart_type: 'histogram',
+                binned: true,
+                width: 750,
+                y_extended_ticks: true,
+                x_accessor:'value',
+                y_accessor:'count',
+                markers: data.baselines
+            })
           }
           else {
-            //self.lineData = _.map(self.$.influx.response, function(metric) {
-            self.lineData = _.map(self.$.influx.response, function(metric) {
-              var points = _.map(metric.points, function(point) {
-                return { time: point[0]/1000, val: point[1], upper: point[2], lower: point[3] }
-              })
-              return _.sortBy(points, function(a) { return a.time } )
+            data_graphic({
+                data: data.points,
+                target: self.$.graphicTarget,
+                area: true,
+                width: 750,
+                height: 500,
+                x_accessor:'time',
+                y_accessor:'val',
+                x_label: 'time',
+                y_label: 'ms',
+                show_confidence_band: ['lower', 'upper'],
+                baselines: data.baselines
             })
-
-            var params = JSON.parse(self.$.influx.params)
-            params.q = self.base_iql.replace(/#function#/, "median(value)").replace(/#group#/, "")
-
-            self.$.xhr.request({url: self.$.influx.url, params: params, callback: function(baselineData) {
-              var baselines = _.map(JSON.parse(baselineData), function(line) {
-                var val = line.points[0][1]
-                return { value: val, label: 'median:'+val }
-              })
-              data_graphic({
-                  data: self.lineData,
-                  target: self.$.graphicTarget,
-                  area: true,
-                  width: 750,
-                  height: 500,
-                  x_accessor:'time',
-                  y_accessor:'val',
-                  x_label: 'time',
-                  y_label: 'ms',
-                  show_confidence_band: ['lower', 'upper'],
-                  baselines: baselines
-              })
-
-            }})
-
           }
         },
         setFavorite: function(uid, isFavorite) {

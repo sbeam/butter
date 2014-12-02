@@ -1,0 +1,63 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="maitai-query-service" attributes="query response iql">
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+    <core-ajax
+       auto
+       id="server"
+       url="http://stats.reviewed.com:8086/db/hydra-timing/series"
+       params='{"q":"{{iql}}", "u":"root","p":"root"}'
+       handleAs="json"
+       on-core-response="{{dataLoaded}}">
+    </core-ajax>
+    <core-xhr id="xhr"></core-xhr>
+  </template>
+  <script>
+  Polymer('maitai-query-service', {
+    attached: function() {
+      this.base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff+" and value > 0"
+      if (this.query.type == 'histogram') {
+        this.iql = this.base_iql.replace(/#function#/, 'histogram(value, '+this.query.bucket_width+')').replace(/#group#/, "")
+      }
+      else {
+        this.iql = this.base_iql.replace(/#function#/, 'median(value), percentile(value, 60), percentile(value, 40)').replace(/#group#/, "group by time("+this.query.time_group+")")
+      }
+    },
+    dataLoaded: function() {
+      var self = this
+
+      var data;
+      if (this.query.type == 'histogram') {
+        var points = self.$.server.response[0].points
+        data = _.map(points, function(v, i) { return { count: v[2], value: v[1] } })
+        data = _.sortBy(data, function(a) { return a.value } )
+      }
+      else {
+        data = _.map(self.$.server.response, function(metric) {
+          var points = _.map(metric.points, function(point) {
+            return { time: point[0]/1000, val: point[1], upper: point[2], lower: point[3] }
+          })
+          return _.sortBy(points, function(a) { return a.time } )
+        })
+      }
+
+      var params = JSON.parse(self.$.server.params)
+      params.q = self.base_iql.replace(/#function#/, "median(value)").replace(/#group#/, "")
+
+      self.$.xhr.request({url: self.$.server.url, params: params, callback: function(baselineData) {
+        var baselines = _.map(JSON.parse(baselineData), function(line) {
+          var val = line.points[0][1]
+          return { value: val, label: 'median:'+val }
+        })
+        self.response = { points: data, baselines: baselines }
+      }})
+    }
+  })
+  </script>
+</polymer-element>
