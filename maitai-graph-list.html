@@ -1,5 +1,5 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="magoo-field.html">
+<link rel="import" href="maitai-field.html">
 <link rel="import" href="maitai-dashboard-service.html">
 <link rel="import" href="bower_components/core-item/core-item.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
@@ -16,7 +16,7 @@
       display: block;
       width: 100%;
     }
-    magoo-field {
+    maitai-field {
       margin-bottom: 30px;
     }
 
@@ -75,10 +75,10 @@
 
     <div layout vertical center>
       <template repeat="{{query in queries}}">
-        <magoo-field chartType="{{query.type}}"
+        <maitai-field chartType="{{query.type}}"
                      query="{{query}}">
            <h1>{{query.title}}</h1>
-        </magoo-field>
+        </maitai-field>
       </template>
     </div>
 
