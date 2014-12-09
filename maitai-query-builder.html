@@ -36,7 +36,7 @@
     </style>
     <core-dropdown-menu label="Chart type">
         <core-dropdown class="dropdown">
-            <core-selector valueattr="value" selected="{{query.type}}">
+            <core-selector valueattr="value" selected="{{query.type}}" on-core-select="{{typeChanged}}">
                 <template repeat="{{chartTypes}}">
                   <div value="{{}}">{{}}</div>
                 </template>
@@ -45,7 +45,7 @@
     </core-dropdown-menu>
     <core-dropdown-menu label="Selected Series">
         <core-dropdown class="dropdown">
-            <core-selector id="seriesSelect" multi valueattr="value" selected="{{query.series}}"">
+            <core-selector id="seriesSelect" multi valueattr="value" selected="{{query.series}}" on-core-select="{{seriesChanged}}">
                 <template repeat="{{series}}">
                   <div value="{{}}">{{}}</div>
                 </template>
@@ -53,7 +53,9 @@
         </core-dropdown>
     </core-dropdown-menu>
 
-    group by <paper-input class="" value="{{query.time_group}}" label="group"></paper-input>
+    <span hidden?="{{query.type == 'histogram'}}" id="groupBy">
+      group by <paper-input class="" value="{{query.time_group}}" label="group"></paper-input>
+    </span>
     from <paper-input class="" value="{{query.time_start}}" label="start"></paper-input>
     to <paper-input class="" value="{{query.time_end}}" label="end"></paper-input>
     where value &lt; <paper-input class="" value="{{query.cutoff}}" label="cutoff"></paper-input>
@@ -66,6 +68,13 @@
   <script>
       Polymer({
         chartTypes: ['histogram', 'time series'],
+
+        typeChanged: function(e, detail) {
+          this.$.seriesSelect.multi = (detail.item.attributes.value.value != 'histogram') // so many dots!!
+        },
+
+        seriesChanged: function(e, detail) {
+        },
 
         series: ['navigationStart', 'redirectStart', 'redirectEnd', 'fetchStart', 'domainLookupStart', 'domainLookupEnd',
                  'connectStart', 'connectEnd', 'secureConnectionStart', 'requestStart', 'responseStart', 'responseEnd',

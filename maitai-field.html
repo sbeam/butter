@@ -85,7 +85,6 @@
             self.$.queryService.compileQuery()
           })
           self.$.queryService.addEventListener('error', function(e) {
-            console.error(e.detail.message)  // TODO dialog?
             self.error = e.detail
           })
         },
@@ -115,7 +114,7 @@
             data_graphic({
                 data: data.points,
                 target: self.$.graphicTarget,
-                area: true,
+                area: false,
                 width: 750,
                 height: 500,
                 x_accessor:'time',

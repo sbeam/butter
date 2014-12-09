@@ -23,7 +23,8 @@
   <script>
   Polymer('maitai-query-service', {
     compileQuery: function() {
-      this.base_iql = "select #function# from "+this.query.series.join(",")+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff+" and value > 0"
+      var series = (typeof(this.query.series) == 'array') ? this.query.series.join(",") : this.query.series;
+      this.base_iql = "select #function# from "+series+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff+" and value > 0"
       if (this.query.type == 'histogram') {
         this.iql = this.base_iql.replace(/#function#/, 'histogram(value, '+this.query.bucket_width+')').replace(/#group#/, "")
       }
