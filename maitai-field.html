@@ -97,6 +97,7 @@
         },
         chartDataLoaded: function(oldData, data) {
           var self = this
+
           if (this.query.type == 'histogram') {
             data_graphic({
                 data: data.points,
@@ -125,6 +126,7 @@
                 baselines: data.baselines
             })
           }
+          self.error = null
         },
         setFavorite: function(uid, isFavorite) {
           console.log('Favorite changed: ' + uid + ", now: " + isFavorite);

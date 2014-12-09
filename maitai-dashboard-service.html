@@ -23,9 +23,8 @@
     dataLoaded: function() {
       this.queries = this.$.ajax.response.slice(0);
     },
-    addQuery: function(query) {
-      console.log('new query received! ' + query.query)
-      this.queries.push(query)
+    addQuery: function() {
+      this.queries.push({title: 'new query', type: 'time series'})
     }
   });
   </script>

@@ -67,8 +67,7 @@
       this.compileQuery()
     },
     errorResult: function(err) {
-      debugger
-      this.fire('error', err)
+      this.fire('error', {message: err.detail.response})
     }
   })
   </script>

@@ -56,18 +56,6 @@
 
 
     <div horizontal end-justified layout>
-      <paper-input value="{{query}}" label="Enter some IQL if you please"></paper-input>
-
-      <core-dropdown-menu label="Chart type">
-          <core-dropdown class="dropdown">
-              <core-menu selectedItem="{{selectedChartType}}">
-                  <template repeat="{{chartTypes}}">
-                    <core-item>{{}}</core-item>
-                  </template>
-              </core-menu>
-          </core-dropdown>
-      </core-dropdown-menu>
-
       <paper-button on-click="{{addQuery}}">
         <core-icon icon="add-circle-outline"></core-icon>
       </paper-button>
@@ -86,8 +74,7 @@
           chartTypes: ['histogram', 'time series'],
 
           addQuery: function(e, detail, sender) {
-            console.log(this.selectedChartType.innerText)
-            this.$.dashboardService.addQuery({type: this.selectedChartType.innerText, title: 'new query', query: this.query})
+            this.$.dashboardService.addQuery()
           },
 
 
