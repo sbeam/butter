@@ -3,10 +3,10 @@
 <link rel="import" href="bower_components/core-xhr/core-xhr.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 
-<link rel="import" href="maitai-query-builder.html">
-<link rel="import" href="maitai-query-service.html">
+<link rel="import" href="butter-query-builder.html">
+<link rel="import" href="butter-query-service.html">
 
-<polymer-element name="maitai-field" attributes="url query chartType">
+<polymer-element name="butter-field" attributes="url query chartType">
 
   <template>
     <!-- http://japhr.blogspot.com/2014/06/dynamically-adding-external-styles-to.html -->
@@ -69,10 +69,10 @@
         <div id="debug">
           <span>{{iql}}</span>
         </div>
-        <maitai-query-builder id="builder" query="{{query}}"></maitai-query-builder>
+        <butter-query-builder id="builder" query="{{query}}"></butter-query-builder>
     </div>
     <content></content>
-    <maitai-query-service id="queryService" iql="{{iql}}" query="{{query}}" response="{{responseData}}"></maitai-query-service>
+    <butter-query-service id="queryService" iql="{{iql}}" query="{{query}}" response="{{responseData}}"></butter-query-service>
   </template>
   <script>
       Polymer({
@@ -81,7 +81,7 @@
           self.query = self.query || {}
 
           self.$.builder.addEventListener('query-changed', function() {
-            console.debug('maitai-field: query-changed!')
+            console.debug('butter-field: query-changed!')
             self.$.queryService.compileQuery()
           })
           self.$.queryService.addEventListener('error', function(e) {

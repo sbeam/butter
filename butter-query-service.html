@@ -1,7 +1,7 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 
-<polymer-element name="maitai-query-service" attributes="query response iql">
+<polymer-element name="butter-query-service" attributes="query response iql">
   <template>
     <style>
     :host {
@@ -21,7 +21,7 @@
     <core-xhr id="xhr"></core-xhr>
   </template>
   <script>
-  Polymer('maitai-query-service', {
+  Polymer('butter-query-service', {
     compileQuery: function() {
       var series = (typeof(this.query.series) == 'array') ? this.query.series.join(",") : this.query.series;
       this.base_iql = "select #function# from "+series+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff+" and value > 0"

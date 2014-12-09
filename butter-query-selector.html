@@ -3,12 +3,12 @@
 <link rel="import" href="bower_components/paper-input/paper-input.html">
 <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
-<link rel="import" href="maitai-dashboard-service.html">
+<link rel="import" href="butter-dashboard-service.html">
 
-<polymer-element name="maitai-query-selector">
+<polymer-element name="butter-query-selector">
 
   <template>
-    <maitai-dashboard-service id="dashboardService" queries="{{queries}}"></maitai-dashboard-service>
+    <butter-dashboard-service id="dashboardService" queries="{{queries}}"></butter-dashboard-service>
 
           <paper-input value="{{query}}" label="Enter some IQL if you please"></paper-input>
           <paper-button on-click="{{addQuery}}">

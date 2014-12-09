@@ -1,6 +1,6 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="maitai-field.html">
-<link rel="import" href="maitai-dashboard-service.html">
+<link rel="import" href="butter-field.html">
+<link rel="import" href="butter-dashboard-service.html">
 <link rel="import" href="bower_components/core-item/core-item.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 <link rel="import" href="bower_components/core-menu/core-menu.html">
@@ -9,14 +9,14 @@
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-input/paper-input.html">
 
-<polymer-element name="maitai-graph-list" attributes="show">
+<polymer-element name="butter-graph-list" attributes="show">
   <template>
     <style>
     :host {
       display: block;
       width: 100%;
     }
-    maitai-field {
+    butter-field {
       margin-bottom: 30px;
     }
 
@@ -52,7 +52,7 @@
     }
     </style>
 
-    <maitai-dashboard-service id="dashboardService" queries="{{queries}}"></maitai-dashboard-service>
+    <butter-dashboard-service id="dashboardService" queries="{{queries}}"></butter-dashboard-service>
 
 
     <div horizontal end-justified layout>
@@ -63,7 +63,7 @@
 
     <div layout vertical center>
       <template repeat="{{query in queries}}">
-        <maitai-field chartType="{{query.type}}" query="{{query}}"></maitai-field>
+        <butter-field chartType="{{query.type}}" query="{{query}}"></butter-field>
       </template>
     </div>
 
