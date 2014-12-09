@@ -75,10 +75,7 @@
 
     <div layout vertical center>
       <template repeat="{{query in queries}}">
-        <maitai-field chartType="{{query.type}}"
-                     query="{{query}}">
-           <h1>{{query.title}}</h1>
-        </maitai-field>
+        <maitai-field chartType="{{query.type}}" query="{{query}}"></maitai-field>
       </template>
     </div>
 

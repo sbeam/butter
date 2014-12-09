@@ -1,0 +1,80 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-menu/core-menu.html">
+<link rel="import" href="bower_components/core-dropdown/core-dropdown.html">
+<link rel="import" href="bower_components/core-dropdown-menu/core-dropdown-menu.html">
+<link rel="import" href="bower_components/core-selector/core-selector.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+
+
+<polymer-element name="maitai-query-builder" attributes="query">
+
+  <template>
+    <style>
+    :host {
+      display: block;
+      position: relative;
+      width: 100%;
+      font-size: 0.7rem;
+      font-weight: 200;
+      background: #444;
+    }
+    core-dropdown-menu {
+      background: inherit;
+      color: #aaa;
+    }
+    .core-selected {
+      font-weight: bold;
+    }
+    paper-input {
+      width: 60px;
+    }
+    paper-input.where {
+      width: 120px;
+    }
+    </style>
+    <core-dropdown-menu label="Chart type">
+        <core-dropdown class="dropdown">
+            <core-selector valueattr="value" selected="{{query.type}}">
+                <template repeat="{{chartTypes}}">
+                  <div value="{{}}">{{}}</div>
+                </template>
+            </core-selector>
+        </core-dropdown>
+    </core-dropdown-menu>
+    <core-dropdown-menu label="Selected Series">
+        <core-dropdown class="dropdown">
+            <core-selector id="seriesSelect" multi valueattr="value" selected="{{query.series}}"">
+                <template repeat="{{series}}">
+                  <div value="{{}}">{{}}</div>
+                </template>
+            </core-selector>
+        </core-dropdown>
+    </core-dropdown-menu>
+
+    group by <paper-input class="" value="{{query.time_group}}" label="group"></paper-input>
+    from <paper-input class="" value="{{query.time_start}}" label="start"></paper-input>
+    to <paper-input class="" value="{{query.time_end}}" label="end"></paper-input>
+    where value &lt; <paper-input class="" value="{{query.cutoff}}" label="cutoff"></paper-input>
+
+    <!-- TODO selectable where clauses -->
+    and where <paper-input class="where" value="{{query.where}}" label="where"></paper-input>
+    <core-icon on-click="{{sendQuery}}" icon="refresh"></core-icon>
+  </template>
+
+  <script>
+      Polymer({
+        chartTypes: ['histogram', 'time series'],
+
+        series: ['navigationStart', 'redirectStart', 'redirectEnd', 'fetchStart', 'domainLookupStart', 'domainLookupEnd',
+                 'connectStart', 'connectEnd', 'secureConnectionStart', 'requestStart', 'responseStart', 'responseEnd',
+                 'domLoading', 'domInteractive', 'domContentLoadedEventStart', 'domContentLoadedEventEnd',
+                 'domComplete', 'loadEventStart', 'loadEventEnd'],
+
+        sendQuery: function() {
+          this.fire('query-changed')
+        }
+      })
+  </script>
+</polymer-element>

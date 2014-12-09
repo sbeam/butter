@@ -3,6 +3,7 @@
 <link rel="import" href="bower_components/core-xhr/core-xhr.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
 
+<link rel="import" href="maitai-query-builder.html">
 <link rel="import" href="maitai-query-service.html">
 
 <polymer-element name="maitai-field" attributes="url query chartType">
@@ -41,6 +42,10 @@
         font-size: 0.8rem;
         font-weight: 100;
     }
+    #error {
+      font-weight: 900;
+      color: #d33;
+    }
     #debug {
       display: none;
     }
@@ -54,7 +59,9 @@
     }
     </style>
     <div class="card-header">
-        <content select="h1"></content>
+        <content></content>
+        <div id="error">{{error.message}}</div>
+
         <div id="graphicTarget"></div>
         <div horizontal end-justified layout>
           <core-icon on-click="{{toggleDebugDisplay}}" icon="visibility"></core-icon>
@@ -62,12 +69,26 @@
         <div id="debug">
           <span>{{iql}}</span>
         </div>
+        <maitai-query-builder id="builder" query="{{query}}"></maitai-query-builder>
     </div>
     <content></content>
     <maitai-query-service id="queryService" iql="{{iql}}" query="{{query}}" response="{{responseData}}"></maitai-query-service>
   </template>
   <script>
       Polymer({
+        ready: function() {
+          var self = this
+          self.query = self.query || {}
+
+          self.$.builder.addEventListener('query-changed', function() {
+            console.debug('maitai-field: query-changed!')
+            self.$.queryService.compileQuery()
+          })
+          self.$.queryService.addEventListener('error', function(e) {
+            console.error(e.detail.message)  // TODO dialog?
+            self.error = e.detail
+          })
+        },
         toggleDebugDisplay: function(e, detail, sender) {
           this.$.debug.classList.toggle('on')
         },
