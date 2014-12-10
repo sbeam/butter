@@ -81,7 +81,6 @@
           self.query = self.query || {}
 
           self.$.builder.addEventListener('query-changed', function() {
-            console.debug('butter-field: query-changed!')
             self.$.queryService.compileQuery()
           })
           self.$.queryService.addEventListener('error', function(e) {
@@ -126,9 +125,6 @@
             })
           }
           self.error = null
-        },
-        setFavorite: function(uid, isFavorite) {
-          console.log('Favorite changed: ' + uid + ", now: " + isFavorite);
         }
       })
   </script>
