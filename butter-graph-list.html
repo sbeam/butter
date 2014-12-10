@@ -59,6 +59,9 @@
       <paper-button on-click="{{addQuery}}">
         <core-icon icon="add-circle-outline"></core-icon>
       </paper-button>
+      <paper-button on-click="{{saveDashboard}}">
+        <core-icon icon="save"></core-icon>
+      </paper-button>
     </div>
 
     <div layout vertical center>
@@ -77,6 +80,9 @@
             this.$.dashboardService.addQuery()
           },
 
+          saveDashboard: function(e, detail, sender) {
+            this.$.dashboardService.saveDashboard()
+          },
 
           handleFavorite: function(event, detail, sender) {
               var post = sender.templateInstance.model.post;

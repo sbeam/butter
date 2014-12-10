@@ -10,10 +10,19 @@
     </style>
     <core-ajax id="ajax"
       auto
-      url="./api/queries.json"
+      url="http://stats.reviewed.com:8086/db/butter-dashboards/series?u=dashboard&p=nummy"
+      params='{"u":"dashboard","p":"nummy", "q":"select queries from butter.dashboard limit 1"}'
       on-core-response="{{dataLoaded}}"
       handleAs="json">
     </core-ajax>
+    <core-ajax id="dashboard"
+      method="POST"
+      on-core-response="{{dashboardSaved}}"
+      url="http://stats.reviewed.com:8086/db/butter-dashboards/series?u=dashboard&p=nummy"
+      handleAs="json"
+      body="{{dashboardData}}"
+      on-core-error="{{dashboardSaveError}}">
+
   </template>
   <script>
   Polymer('butter-dashboard-service', {
@@ -21,10 +30,25 @@
       this.queries = [];
     },
     dataLoaded: function() {
-      this.queries = this.$.ajax.response.slice(0);
+      this.queries = JSON.parse(this.$.ajax.response[0].points[0][2]) // TODO adapter?!
     },
     addQuery: function() {
       this.queries.push({title: 'new query', type: 'time series'})
+    },
+    saveDashboard: function() {
+      this.dashboardData = JSON.stringify([{
+        name: 'butter.dashboard',
+        columns: ['queries'],
+        points: [[JSON.stringify(this.queries)]]
+      }])
+      this.$.dashboard.go()
+    },
+    dashboardSaved: function() {
+       alert('saved.')
+    },
+    dashboardSaveError: function() {
+       alert('problem saving')
+       debugger
     }
   });
   </script>
