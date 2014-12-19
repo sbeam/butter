@@ -11,7 +11,7 @@
     <core-ajax
        auto
        id="server"
-       url="http://stats.reviewed.com:8086/db/hydra-timing/series"
+       url="http://stats.reviewed.com:8086/db/hydra-timings/series"
        params='{"q":"{{iql}}", "u":"root","p":"root"}'
        handleAs="json"
        on-core-response="{{dataLoaded}}"
