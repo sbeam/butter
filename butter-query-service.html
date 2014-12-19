@@ -66,7 +66,7 @@
       self.$.xhr.request({url: self.$.server.url, params: params, callback: function(baselineData) {
         var baselines = _.map(JSON.parse(baselineData), function(line) {
           var val = line.points[0][1]
-          return { value: val, label: 'median:'+val }
+          return { value: val, label: "["+line.name+"] median:"+val }
         })
         self.response = { points: data, baselines: baselines }
       }})
