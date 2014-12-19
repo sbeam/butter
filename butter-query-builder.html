@@ -6,6 +6,7 @@
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-input/paper-input.html">
 <link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="butter-where-clause.html">
 
 
 <polymer-element name="butter-query-builder" attributes="query">
@@ -56,12 +57,18 @@
     <span hidden?="{{query.type == 'histogram'}}" id="groupBy">
       group by <paper-input class="" value="{{query.time_group}}" label="group"></paper-input>
     </span>
-    from <paper-input class="" value="{{query.time_start}}" label="start"></paper-input>
-    to <paper-input class="" value="{{query.time_end}}" label="end"></paper-input>
-    where value &lt; <paper-input class="" value="{{query.cutoff}}" label="cutoff"></paper-input>
 
-    <!-- TODO selectable where clauses -->
-    and where <paper-input class="where" value="{{query.where}}" label="where"></paper-input>
+    <!--
+    <butter-timepicker value="{{query.time_start}}"><label>from</label></butter-timepicker>
+    <butter-timepicker value="{{query.time_end}}"><label>to</label></butter-timepicker>
+    -->
+
+    <!--
+    where value &lt; <paper-input class="" value="{{query.cutoff}}" label="cutoff"></paper-input>
+    -->
+
+    <butter-where-clause clauses="{{query.where}}"><label>where</label></butter-where-clause>
+
     <core-icon on-click="{{sendQuery}}" icon="refresh"></core-icon>
   </template>
 

@@ -1,0 +1,36 @@
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+
+<polymer-element name="butter-where-clause" attributes="clauses">
+  <template>
+    <style>
+    :host {
+    }
+    paper-input.where {
+      width: 120px;
+    }
+    </style>
+
+    <content></content>
+
+    <template repeat="{{clause in clauses}}">
+      and
+      <paper-input class="where" value="{{clause.condition}}" label="where"></paper-input>
+    </template>
+
+    <core-icon on-click="{{addClause}}" icon="add"></core-icon>
+
+  </template>
+  <script>
+      Polymer({
+          addClause: function() {
+              this.clauses.push({operator: 'and', condition: ''})
+          },
+          attached: function() {
+              if (!this.clauses || this.clauses == '') {
+                  this.clauses = []
+              }
+          }
+      })
+  </script>
+</polymer-element>

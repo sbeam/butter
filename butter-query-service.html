@@ -24,9 +24,16 @@
   Polymer('butter-query-service', {
     compileQuery: function() {
       var series = (typeof(this.query.series) == 'array') ? this.query.series.join(",") : this.query.series;
-      this.base_iql = "select #function# from "+series+" #group# where time > "+this.query.time_end+" - "+this.query.time_start+" and value < "+this.query.cutoff+" and value > 0"
+      this.base_iql = "select #function# from "+series+" #group#"
+      if (this.query.where.length > 0) {
+        this.base_iql = this.base_iql + " WHERE ";
+        this.base_iql += $.map(this.query.where, function(cond) {
+          return cond.condition
+        }).join(' AND ')
+      }
+
       if (this.query.type == 'histogram') {
-        this.iql = this.base_iql.replace(/#function#/, 'histogram(value, '+this.query.bucket_width+')').replace(/#group#/, "")
+        this.iql = this.base_iql.replace(/#function#/, 'histogram(value, '+(this.query.bucket_width || 100)+')').replace(/#group#/, "")
       }
       else {
         this.iql = this.base_iql.replace(/#function#/, 'median(value), percentile(value, 60), percentile(value, 40)').replace(/#group#/, "group by time("+this.query.time_group+")")
