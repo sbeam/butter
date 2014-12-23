@@ -46,30 +46,16 @@
       font-weight: 900;
       color: #d33;
     }
-    #debug {
-      display: none;
-    }
-    #debug.on {
-      display: block;
-    }
-    #debug span {
-      font-family: monospace;
-      font-size: 10px;
-      color: #ddd;
-    }
     </style>
     <div class="card-header">
         <content></content>
         <div id="error">{{error.message}}</div>
 
         <div id="graphicTarget"></div>
-        <div horizontal end-justified layout>
-          <core-icon on-click="{{toggleDebugDisplay}}" icon="visibility"></core-icon>
-        </div>
-        <div id="debug">
+
+        <butter-query-builder id="builder" query="{{query}}">
           <span>{{iql}}</span>
-        </div>
-        <butter-query-builder id="builder" query="{{query}}"></butter-query-builder>
+        </butter-query-builder>
     </div>
     <content></content>
     <butter-query-service id="queryService" iql="{{iql}}" query="{{query}}" response="{{responseData}}"></butter-query-service>
@@ -86,9 +72,6 @@
           self.$.queryService.addEventListener('error', function(e) {
             self.error = e.detail
           })
-        },
-        toggleDebugDisplay: function(e, detail, sender) {
-          this.$.debug.classList.toggle('on')
         },
         observe: {
           'responseData': 'chartDataLoaded'

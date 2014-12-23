@@ -47,13 +47,25 @@
     paper-input.where {
       width: 120px;
     }
+    .chart-type, .query-segments, #content {
+      padding: 0 0.6rem;
+    }
     .chart-type {
       background: #333;
-      padding: 0 0.6rem;
     }
     .query-segments {
       color: #eee;
-      padding: 0 0.6rem;
+    }
+    #content {
+      background: #555;
+      color: #999;
+      padding-top: 0.3rem;
+      padding-bottom: 0.3rem;
+      display: none;
+      font-family: monospace;
+    }
+    #content.on {
+      display: block;
     }
     </style>
 
@@ -70,6 +82,7 @@
         </core-dropdown-menu>
       </div>
       <div>
+        <core-icon on-click="{{toggleDebugDisplay}}" icon="visibility"></core-icon>
         <core-icon on-click="{{sendQuery}}" icon="refresh"></core-icon>
       </div>
     </div>
@@ -101,6 +114,9 @@
         <butter-where-clause clauses="{{query.where}}"><label>where</label></butter-where-clause>
 
     </div>
+    <div id="content">
+      <content></content>
+    </div>
   </template>
 
   <script>
@@ -121,7 +137,11 @@
 
         sendQuery: function() {
           this.fire('query-changed')
-        }
+        },
+
+        toggleDebugDisplay: function(e, detail, sender) {
+          this.$.content.classList.toggle('on')
+        },
       })
   </script>
 </polymer-element>
