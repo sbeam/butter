@@ -25,6 +25,10 @@
       background-color: #333;
       color: #eee;
     }
+    .chart-type core-dropdown {
+      border: 1px solid #777;
+      background-color: #555;
+    }
     core-dropdown-menu {
       background: inherit;
       color: #eee;
@@ -38,46 +42,65 @@
     }
     paper-input {
       width: 60px;
+      color: #ccc;
     }
     paper-input.where {
       width: 120px;
     }
+    .chart-type {
+      background: #333;
+      padding: 0 0.6rem;
+    }
+    .query-segments {
+      color: #eee;
+      padding: 0 0.6rem;
+    }
     </style>
-    <core-dropdown-menu label="Chart type">
-        <core-dropdown class="dropdown">
-            <core-selector valueattr="value" selected="{{query.type}}" on-core-select="{{typeChanged}}">
-                <template repeat="{{chartTypes}}">
-                  <div value="{{}}">{{}}</div>
-                </template>
-            </core-selector>
-        </core-dropdown>
-    </core-dropdown-menu>
-    <core-dropdown-menu label="Selected Series">
-        <core-dropdown class="dropdown">
-            <core-selector id="seriesSelect" multi valueattr="value" selected="{{query.series}}" on-core-select="{{seriesChanged}}">
-                <template repeat="{{series}}">
-                  <div value="{{}}">{{}}</div>
-                </template>
-            </core-selector>
-        </core-dropdown>
-    </core-dropdown-menu>
 
-    <span hidden?="{{query.type == 'histogram'}}" id="groupBy">
-      group by <paper-input class="" value="{{query.time_group}}" label="group"></paper-input>
-    </span>
+    <div horizontal layout class="chart-type">
+      <div flex>
+        <core-dropdown-menu label="Chart type">
+            <core-dropdown class="dropdown">
+                <core-selector valueattr="value" selected="{{query.type}}" on-core-select="{{typeChanged}}">
+                    <template repeat="{{chartTypes}}">
+                      <div value="{{}}">{{}}</div>
+                    </template>
+                </core-selector>
+            </core-dropdown>
+        </core-dropdown-menu>
+      </div>
+      <div>
+        <core-icon on-click="{{sendQuery}}" icon="refresh"></core-icon>
+      </div>
+    </div>
 
-    <!--
-    <butter-timepicker value="{{query.time_start}}"><label>from</label></butter-timepicker>
-    <butter-timepicker value="{{query.time_end}}"><label>to</label></butter-timepicker>
-    -->
+    <div class="query-segments">
+        <core-dropdown-menu label="Selected Series">
+            <core-dropdown class="dropdown">
+                <core-selector id="seriesSelect" multi valueattr="value" selected="{{query.series}}" on-core-select="{{seriesChanged}}">
+                    <template repeat="{{series}}">
+                      <div value="{{}}">{{}}</div>
+                    </template>
+                </core-selector>
+            </core-dropdown>
+        </core-dropdown-menu>
 
-    <!--
-    where value &lt; <paper-input class="" value="{{query.cutoff}}" label="cutoff"></paper-input>
-    -->
+        <span hidden?="{{query.type == 'histogram'}}" id="groupBy">
+          group by <paper-input class="" value="{{query.time_group}}" label="group"></paper-input>
+        </span>
 
-    <butter-where-clause clauses="{{query.where}}"><label>where</label></butter-where-clause>
+        <!--
+        <butter-timepicker value="{{query.time_start}}"><label>from</label></butter-timepicker>
+        <butter-timepicker value="{{query.time_end}}"><label>to</label></butter-timepicker>
+        -->
 
-    <core-icon on-click="{{sendQuery}}" icon="refresh"></core-icon>
+        <!--
+        where value &lt; <paper-input class="" value="{{query.cutoff}}" label="cutoff"></paper-input>
+        -->
+
+        <butter-where-clause clauses="{{query.where}}"><label>where</label></butter-where-clause>
+
+    </div>
   </template>
 
   <script>
