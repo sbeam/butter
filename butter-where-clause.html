@@ -13,8 +13,8 @@
 
     <content></content>
 
-    <template repeat="{{clause in clauses}}">
-      and
+    <template repeat="{{clause, i in clauses}}">
+      <span hidden?="{{i == 0}}">AND</span>
       <paper-input class="where" value="{{clause.condition}}" label="where"></paper-input>
     </template>
 
